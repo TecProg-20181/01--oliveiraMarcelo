@@ -62,28 +62,11 @@ void blur(unsigned int h, unsigned short int pixel[512][512][3], int T, unsigned
 
             int menor_h = 0;
             menor_h = min(h - 1,i + T/2);
-            /* 
-            if (h - 1 > i + T/2){
-                menor_h = i + T/2;
-            }
-            else{ 
-                menor_h = h - 1;
-            } */
-
+            
             int min_w = 0;
             min_w = min(w-1,j + T/2);
-            
-            /* 
-            if(w - 1 > j + T/2){
-                min_w = j + T/2;
-            }
-            else{
-                min_w = w - 1;
-            } */
 
-            // int x = (0 > i - T/2 ? 0 : i - T/2);
             for(int x = max(0, i - T/2); x <= menor_h; ++x) {
-                //(int y = (0 > j - T/2 ? 0 : j - T/2)
                 for(int y = max(0, j - T/2); y <= min_w; ++y) {
                     media.r += pixel[x][y][0];
                     media.g += pixel[x][y][1];
@@ -112,18 +95,15 @@ Image sepia_filter(Image img){
 			pixel[2] = img.pixel[x][j][2];
 
 			int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
-			//int menor_r = (255 >  p) ? p : 255;
 			int menor_r = 0;
 			menor_r = min(255,p);
 			img.pixel[x][j][0] = menor_r;
 
 			p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
-			//menor_r = (255 >  p) ? p : 255;
             menor_r = min(255,p);
 			img.pixel[x][j][1] = menor_r;
 
 			p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
-			//menor_r = (255 >  p) ? p : 255;
             menor_r = min(255,p);
 			img.pixel[x][j][2] = menor_r;
 		}
@@ -152,6 +132,7 @@ Image rotation(Image img){
     int quantas_vezes = 0;
     scanf("%d", &quantas_vezes);
     quantas_vezes %= 4;
+    
     for (int j = 0; j < quantas_vezes; ++j) {
         img = rotacionar90direita(img);
     }
