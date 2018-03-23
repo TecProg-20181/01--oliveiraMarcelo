@@ -56,17 +56,13 @@ Image escala_de_cinza(Image img) {
 }
 
 Image blur(Image img, int T) {
-    
-    int w,h;
-    for (unsigned int i = 0; i < h; ++i) {
-        for (unsigned int j = 0; j < w; ++j) {
+    for (unsigned int i = 0; i < img.h; ++i) {
+        for (unsigned int j = 0; j < img.w; ++j) {
             Pixel media = {0, 0, 0};
 
-            int menor_h = 0;
-            menor_h = min(h - 1,i + T/2);
+            int menor_h = min(img.h - 1,i + T/2);
             
-            int min_w = 0;
-            min_w = min(w-1,j + T/2);
+            int min_w = min(img.w-1,j + T/2);
 
             for(int x = max(0, i - T/2); x <= menor_h; ++x) {
                 for(int y = max(0, j - T/2); y <= min_w; ++y) {
@@ -184,9 +180,9 @@ Image mirroring(Image img){
     return img;
 }
 
-Image inverter_cores(Image img, int w, int h) {
-    for (unsigned int i = 0; i < h; ++i) {
-        for (unsigned int j = 0; j < w; ++j) {
+Image inverter_cores(Image img) {
+    for (unsigned int i = 0; i < img.h; ++i) {
+        for (unsigned int j = 0; j < img.w; ++j) {
             img.pixel[i][j].r = 255 - img.pixel[i][j].r;
             img.pixel[i][j].g = 255 - img.pixel[i][j].g;
             img.pixel[i][j].b = 255 - img.pixel[i][j].b;
@@ -194,7 +190,6 @@ Image inverter_cores(Image img, int w, int h) {
     }
     return img;
 }
-
 Image cortar_imagem(Image img, int x, int y, int w, int h) {
     Image cortada;
     
@@ -273,7 +268,7 @@ int main() {
             case 3: { // Blur
                 int tamanho = 0;
                 scanf("%d", &tamanho);
-                blur(img, tamanho);
+                img = blur(img, tamanho);
                 break;
             }
             case 4: { // Rotacao
@@ -286,7 +281,7 @@ int main() {
                 break;
             }
             case 6: { // Inversao de Cores
-                inverter_cores(img, img.w, img.h);
+                img = inverter_cores(img);
                 break;
             }
             case 7: { // Cortar Imagem
