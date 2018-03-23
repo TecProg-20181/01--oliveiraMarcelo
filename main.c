@@ -36,7 +36,14 @@ int pixel_igual(Pixel p1, Pixel p2) {
         return 1;
     return 0;
 }
+ 
+void paint_pixels(int i, int j, int red, int green, int blue, Image *img){
+            
+            img->pixel[i][j].r = red;
+            img->pixel[i][j].g = green;
+            img->pixel[i][j].b = blue;
 
+}
 
 Image escala_de_cinza(Image img) {
 
@@ -45,10 +52,10 @@ Image escala_de_cinza(Image img) {
             int media = img.pixel[i][j].r +
                         img.pixel[i][j].g +
                         img.pixel[i][j].b;
+            
             media /= 3;
-            img.pixel[i][j].r = media;
-            img.pixel[i][j].g = media;
-            img.pixel[i][j].b = media;
+            paint_pixels(i,j,media,media,media,&img);
+            
         }
     }
 
@@ -72,14 +79,11 @@ Image blur(Image img, int T) {
                 }
             }
 
-            // printf("%u", media.r)
             media.r /= T * T;
             media.g /= T * T;
             media.b /= T * T;
 
-            img.pixel[i][j].r = media.r;
-            img.pixel[i][j].g = media.g;
-            img.pixel[i][j].b = media.b;
+            paint_pixels(i, j, media.r, media.g, media.b, &img);
         }
     }
     return img;
@@ -94,7 +98,7 @@ Image sepia_filter(Image img, int w, int h){
                 pixel[1] = img.pixel[x][j].g;
                 pixel[2] = img.pixel[x][j].b;
 
-			int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
+ 			int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
 			int menor_r = 0;
 			menor_r = min(255,p);
 			img.pixel[x][j].r = menor_r;
@@ -112,16 +116,12 @@ Image sepia_filter(Image img, int w, int h){
 }
 
 Image rotacionar90direita(Image img) {
-    Image rotacionada;
-
-    rotacionada.w = img.h;
-    rotacionada.h = img.w;
+    Image rotacionada = img;
 
     for (unsigned int i = 0, y = 0; i < rotacionada.h; ++i, ++y) {
         for (int j = rotacionada.w - 1, x = 0; j >= 0; --j, ++x) {
-            rotacionada.pixel[i][j].r = img.pixel[x][y].r;
-            rotacionada.pixel[i][j].g = img.pixel[x][y].g;
-            rotacionada.pixel[i][j].b = img.pixel[x][y].b;
+            
+            paint_pixels(i, j, img.pixel[x][y].r,img.pixel[x][y].g, img.pixel[x][y].b, &rotacionada);
         }
     }
 
@@ -138,6 +138,7 @@ Image rotation(Image img){
     }
     return img;
 }
+
 
 Image mirroring(Image img){
     int horizontal = 0;
@@ -161,20 +162,19 @@ Image mirroring(Image img){
             }
             else{
                 x = img.h - 1 - i2;
-            }
-
+            } 
+             
             Pixel aux1;
             aux1.r = img.pixel[i2][j].r;
             aux1.g = img.pixel[i2][j].g;
             aux1.b = img.pixel[i2][j].b;
 
-            img.pixel[i2][j].r = img.pixel[x][y].r;
-            img.pixel[i2][j].g = img.pixel[x][y].g;
-            img.pixel[i2][j].b = img.pixel[x][y].b;
+            int red = img.pixel[x][y].r;
+            int green = img.pixel[x][y].g;
+            int blue = img.pixel[x][y].b;
+            paint_pixels(i2, j, red, green, blue, &img);
+            paint_pixels(x, y, aux1.r, aux1.g, aux1.b, &img);
 
-            img.pixel[x][y].r = aux1.r;
-            img.pixel[x][y].g = aux1.g;
-            img.pixel[x][y].b = aux1.b;
         }
     }
     return img;
